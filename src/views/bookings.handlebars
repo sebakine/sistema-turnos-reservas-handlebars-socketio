@@ -1,0 +1,108 @@
+<section class="page-header">
+  <div>
+    <h1>Gestión de Reservas</h1>
+    <p class="subtitle">
+      Reservas persistidas en MongoDB con referencias ObjectId a servicios y sincronización en tiempo real.
+    </p>
+  </div>
+  <div class="metric-pill">
+    Total reservas: <strong id="bookings-total-count">{{bookingsCount}}</strong>
+  </div>
+</section>
+
+<div class="grid-two-cols">
+  <section class="panel">
+    <h2>Nueva reserva</h2>
+    <form id="create-booking-form" class="form-stack">
+      <label class="field">
+        <span>Nombre del cliente</span>
+        <input type="text" name="clientName" required placeholder="Ej. María González" />
+      </label>
+
+      <label class="field">
+        <span>Email del cliente</span>
+        <input type="email" name="clientEmail" required placeholder="maria@example.com" />
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Fecha</span>
+          <input type="date" name="date" required />
+        </label>
+
+        <label class="field">
+          <span>Hora (24h)</span>
+          <input type="time" name="time" required />
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Servicio inicial (opcional)</span>
+        <select name="serviceId" id="booking-service-select">
+          <option value="">-- Sin servicio inicial --</option>
+          {{#each services}}
+            <option value="{{this._id}}">{{this.name}} ({{this.duration}} min - {{formatPrice this.price}})</option>
+          {{/each}}
+        </select>
+      </label>
+
+      <p id="booking-form-feedback" class="form-feedback" hidden></p>
+
+      <button type="submit" class="btn btn-primary">Agendar reserva</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Reservas registradas</h2>
+      <span class="hint">Actualización automática vía Socket.io</span>
+    </div>
+
+    <div id="bookings-list" class="cards-list">
+      {{#if bookings.length}}
+        {{#each bookings}}
+          <article class="card" data-booking-id="{{this._id}}">
+            <div class="card-top">
+              <div>
+                <h3 class="card-title">{{this.clientName}}</h3>
+                <p class="card-meta">{{this.clientEmail}} · {{this.date}} a las {{this.time}} hs</p>
+              </div>
+              <span class="badge badge-status-{{this.status}}">{{statusLabel this.status}}</span>
+            </div>
+
+            <div class="booking-services-block">
+              <h4>Servicios incluidos</h4>
+              <ul class="mini-service-list" data-role="booking-services">
+                {{#if this.services.length}}
+                  {{#each this.services}}
+                    <li>
+                      {{#if this.service.name}}{{this.service.name}}{{else}}Servicio {{this.service}}{{/if}}
+                      <span class="qty-chip">x{{this.quantity}}</span>
+                    </li>
+                  {{/each}}
+                {{else}}
+                  <li class="muted">Sin servicios asignados aún</li>
+                {{/if}}
+              </ul>
+            </div>
+
+            {{#unless (eq this.status 'cancelled')}}
+              <form class="inline-add-service js-add-service-form" data-booking-id="{{this._id}}">
+                <select name="serviceId" required aria-label="Seleccionar servicio para agregar">
+                  {{#each ../services}}
+                    <option value="{{this._id}}">{{this.name}}</option>
+                  {{/each}}
+                </select>
+                <button type="submit" class="btn btn-secondary">Agregar servicio</button>
+              </form>
+            {{/unless}}
+          </article>
+        {{/each}}
+      {{else}}
+        <p id="bookings-empty" class="empty-state">
+          No hay reservas registradas en MongoDB. Crea una desde el formulario.
+        </p>
+      {{/if}}
+    </div>
+  </section>
+</div>

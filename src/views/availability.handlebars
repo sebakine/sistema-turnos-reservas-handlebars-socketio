@@ -1,0 +1,103 @@
+<section class="page-header">
+  <div>
+    <h1>Disponibilidad y Agenda en Tiempo Real</h1>
+    <p class="subtitle">
+      Estado actual de disponibilidad de servicios y turnos agendados consultados directamente desde MongoDB.
+    </p>
+  </div>
+</section>
+
+<section class="stats-grid">
+  <div class="stat-card">
+    <span class="stat-label">Servicios disponibles</span>
+    <strong id="available-count" class="stat-value stat-ok">{{availableCount}}</strong>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Servicios no disponibles</span>
+    <strong id="unavailable-count" class="stat-value stat-off">{{unavailableCount}}</strong>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Turnos agendados</span>
+    <strong id="availability-bookings-count" class="stat-value">{{bookingsCount}}</strong>
+  </div>
+</section>
+
+<div class="grid-two-cols">
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Disponibilidad por servicio</h2>
+      <span class="hint">Cambiar estado actualiza todos los clientes</span>
+    </div>
+
+    <div id="availability-services-list" class="cards-list">
+      {{#if services.length}}
+        {{#each services}}
+          <article class="card compact-card" data-service-id="{{this._id}}" data-available="{{this.available}}">
+            <div class="card-top">
+              <div>
+                <h3 class="card-title">{{this.name}}</h3>
+                <p class="card-meta">{{this.category}} · {{this.duration}} min · {{formatPrice this.price}}</p>
+              </div>
+              <span class="badge {{#if this.available}}badge-ok{{else}}badge-off{{/if}}" data-role="availability-badge">
+                {{#if this.available}}Disponible{{else}}No disponible{{/if}}
+              </span>
+            </div>
+            <div class="card-actions">
+              <button
+                type="button"
+                class="btn btn-secondary js-toggle-availability"
+                data-service-id="{{this._id}}"
+                data-available="{{this.available}}"
+              >
+                {{#if this.available}}Pausar disponibilidad{{else}}Habilitar servicio{{/if}}
+              </button>
+            </div>
+          </article>
+        {{/each}}
+      {{else}}
+        <p id="availability-services-empty" class="empty-state">
+          No hay servicios registrados en MongoDB.
+        </p>
+      {{/if}}
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Turnos reservados</h2>
+      <a href="/views/bookings" class="link-inline">Gestionar reservas →</a>
+    </div>
+
+    <div id="availability-bookings-list" class="cards-list">
+      {{#if bookings.length}}
+        {{#each bookings}}
+          <article class="card compact-card" data-booking-id="{{this._id}}">
+            <div class="card-top">
+              <div>
+                <h3 class="card-title">{{this.date}} · {{this.time}} hs</h3>
+                <p class="card-meta">{{this.clientName}} ({{this.clientEmail}})</p>
+              </div>
+              <span class="badge badge-status-{{this.status}}">{{statusLabel this.status}}</span>
+            </div>
+            <ul class="mini-service-list">
+              {{#if this.services.length}}
+                {{#each this.services}}
+                  <li>
+                    {{#if this.service.name}}{{this.service.name}}{{else}}Servicio {{this.service}}{{/if}}
+                    <span class="qty-chip">x{{this.quantity}}</span>
+                  </li>
+                {{/each}}
+              {{else}}
+                <li class="muted">Sin servicios asignados aún</li>
+              {{/if}}
+            </ul>
+          </article>
+        {{/each}}
+      {{else}}
+        <p id="availability-bookings-empty" class="empty-state">
+          Todavía no hay turnos agendados en MongoDB.
+        </p>
+      {{/if}}
+    </div>
+  </section>
+</div>

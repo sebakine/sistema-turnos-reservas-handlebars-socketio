@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body data-page="{{activePage}}">
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a href="/views/services" class="brand">
+          <span class="brand-dot" aria-hidden="true"></span>
+          Turnos &amp; Reservas
+        </a>
+        <nav class="nav" aria-label="Navegación principal">
+          <a href="/views/services" class="nav-link {{#if (eq activePage 'services')}}active{{/if}}">Servicios</a>
+          <a href="/views/availability" class="nav-link {{#if (eq activePage 'availability')}}active{{/if}}">Disponibilidad</a>
+          <a href="/views/bookings" class="nav-link {{#if (eq activePage 'bookings')}}active{{/if}}">Reservas</a>
+        </nav>
+        <div id="socket-status" class="socket-badge socket-connecting" role="status" aria-live="polite">
+          Conectando...
+        </div>
+      </div>
+    </header>
+
+    <main class="container main-content">
+      {{{body}}}
+    </main>
+
+    <div id="realtime-toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <span>Sistema Backend de Turnos y Reservas · Express, MongoDB, Handlebars y Socket.io</span>
+        <span>Autor: Sebastian Felipe Muñoz Rivera</span>
+      </div>
+    </footer>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/socket.js"></script>
+  </body>
+</html>

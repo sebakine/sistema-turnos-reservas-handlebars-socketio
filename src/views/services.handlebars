@@ -1,0 +1,119 @@
+<section class="page-header">
+  <div>
+    <h1>Catálogo de Servicios</h1>
+    <p class="subtitle">
+      Servicios obtenidos desde MongoDB. Los cambios realizados aquí o desde la API REST se reflejan en tiempo real.
+    </p>
+  </div>
+  <div class="metric-pill">
+    Total: <strong id="services-total-count">{{totalCount}}</strong>
+  </div>
+</section>
+
+<div class="grid-two-cols">
+  <section class="panel">
+    <h2>Nuevo servicio</h2>
+    <form id="create-service-form" class="form-stack">
+      <label class="field">
+        <span>Nombre</span>
+        <input type="text" name="name" required placeholder="Ej. Control dental" />
+      </label>
+
+      <label class="field">
+        <span>Descripción</span>
+        <textarea name="description" rows="2" required placeholder="Detalle breve del servicio"></textarea>
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Duración (minutos)</span>
+          <input type="number" name="duration" min="1" step="1" required placeholder="30" />
+        </label>
+
+        <label class="field">
+          <span>Precio ($)</span>
+          <input type="number" name="price" min="0" step="100" required placeholder="25000" />
+        </label>
+      </div>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Categoría</span>
+          <input type="text" name="category" required placeholder="salud, belleza, bienestar..." />
+        </label>
+
+        <label class="field">
+          <span>Disponibilidad</span>
+          <select name="available">
+            <option value="true" selected>Disponible</option>
+            <option value="false">No disponible</option>
+          </select>
+        </label>
+      </div>
+
+      <p id="service-form-feedback" class="form-feedback" hidden></p>
+
+      <button type="submit" class="btn btn-primary">Crear servicio</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="panel-header">
+      <h2>Servicios registrados</h2>
+      <span class="hint">Actualización automática vía Socket.io</span>
+    </div>
+
+    <div id="services-list" class="cards-list">
+      {{#if services.length}}
+        {{#each services}}
+          <article class="card" data-service-id="{{this._id}}">
+            <div class="card-top">
+              <div>
+                <h3 class="card-title">{{this.name}}</h3>
+                <span class="category-tag">{{this.category}}</span>
+              </div>
+              <span class="badge {{#if this.available}}badge-ok{{else}}badge-off{{/if}}" data-role="availability-badge">
+                {{#if this.available}}Disponible{{else}}No disponible{{/if}}
+              </span>
+            </div>
+
+            <p class="card-desc">{{this.description}}</p>
+
+            <dl class="meta-grid">
+              <div>
+                <dt>Duración</dt>
+                <dd>{{this.duration}} min</dd>
+              </div>
+              <div>
+                <dt>Precio</dt>
+                <dd>{{formatPrice this.price}}</dd>
+              </div>
+            </dl>
+
+            <div class="card-actions">
+              <button
+                type="button"
+                class="btn btn-secondary js-toggle-availability"
+                data-service-id="{{this._id}}"
+                data-available="{{this.available}}"
+              >
+                {{#if this.available}}Marcar no disponible{{else}}Marcar disponible{{/if}}
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger js-delete-service"
+                data-service-id="{{this._id}}"
+              >
+                Eliminar
+              </button>
+            </div>
+          </article>
+        {{/each}}
+      {{else}}
+        <p id="services-empty" class="empty-state">
+          No hay servicios cargados todavía en MongoDB. Crea el primero desde el formulario.
+        </p>
+      {{/if}}
+    </div>
+  </section>
+</div>

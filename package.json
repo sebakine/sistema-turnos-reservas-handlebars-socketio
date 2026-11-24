@@ -1,0 +1,44 @@
+{
+  "name": "sistema-turnos-reservas-handlebars-socketio",
+  "version": "1.0.0",
+  "description": "Sistema Backend de Turnos y Reservas: API REST con Express, arquitectura en capas, MongoDB Atlas con Mongoose, vistas server-side con Handlebars y tiempo real con Socket.io",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/scripts/seed.js",
+    "test": "node --test tests/api.test.js"
+  },
+  "keywords": [
+    "express",
+    "api-rest",
+    "mongodb",
+    "mongodb-atlas",
+    "mongoose",
+    "handlebars",
+    "socket.io",
+    "tiempo-real",
+    "arquitectura-en-capas",
+    "dao",
+    "repository",
+    "turnos",
+    "reservas"
+  ],
+  "author": "Sebastian Felipe Muñoz Rivera",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-handlebars": "^8.0.3",
+    "mongoose": "^8.19.3",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^10.3.0",
+    "socket.io-client": "^4.8.1"
+  }
+}
